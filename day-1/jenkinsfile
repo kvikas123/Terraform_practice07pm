@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+parameters {
+        choice(
+            name: 'ACTION',
+            choices: ['apply', 'destroy'],
+            description: 'Choose whether to apply or destroy Terraform resources'
+        )
+    }
+
+
+    stages {
+        stage('git checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/kvikas123/Terraform_practice07pm.git'
+            }
+        }
+        stage('terraform init') {
+            steps {
+                dir('day-1') {
+                    sh 'terraform init'
+            }
+            }
+        }
+        stage('terraform plan') {
+            steps {
+                dir('day-1') {
+                    sh 'terraform plan'
+            }
+            }
+        }
+        stage('terraform apply/destroy') {
+            steps {
+                dir('day-1') {
+                    sh 'terraform ${ACTION} -auto-approve'
+            }
+            }
+        }
+    }
+}
